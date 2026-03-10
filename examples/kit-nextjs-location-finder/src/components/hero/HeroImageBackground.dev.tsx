@@ -13,7 +13,7 @@ import { USER_ZIPCODE } from 'lib/constants';
 
 export const HeroImageBackground: React.FC<HeroProps> = (props) => {
   const { fields, isPageEditing } = props;
-  const { title, description, bannerText, bannerCTA, image, dictionary, searchLink } = fields;
+  const { title, description, bannerText, bannerCTA, image, dictionary, searchLink } = fields || {};
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export const HeroImageBackground: React.FC<HeroProps> = (props) => {
   if (fields) {
     const needsBanner: boolean = isPageEditing
       ? true
-      : bannerText?.value !== '' || bannerCTA?.value.href !== ''
+      : bannerText?.value !== '' || bannerCTA?.value?.href !== ''
         ? true
         : false;
 
@@ -49,6 +49,9 @@ export const HeroImageBackground: React.FC<HeroProps> = (props) => {
             wrapperClass="absolute w-full inset-0 scrim-background/50 scrim-l-full group-[.position-right]:scrim-r-full group-[.position-right]:scrim-l-0 group-[.position-center]:scrim-l-0 group-[.position-center]:scrim-b-full"
             className="h-full w-full object-cover opacity-80"
             priority={true}
+            loading='eager'
+            fetchPriority='high'
+            page={props.page}
           />
 
           {/* Blur effect for mobile */}
@@ -100,11 +103,11 @@ export const HeroImageBackground: React.FC<HeroProps> = (props) => {
               className="@sm/herowrapper:px-0 @md/herowrapper:mt-7 mt-4 w-full px-5"
             >
               <ZipcodeSearchForm
-                placeholder={dictionary.ZipPlaceholder}
-                buttonText={dictionary?.SubmitCTALabel}
+                placeholder={dictionary.ZipPlaceholder || ''}
+                buttonText={dictionary?.SubmitCTALabel || ''}
                 onSubmit={(values) => {
                   sessionStorage.setItem(USER_ZIPCODE, values.zipcode);
-                  if (searchLink) {
+                  if (searchLink?.value?.href) {
                     window.location.href = `${searchLink.value.href}`;
                   }
                 }}

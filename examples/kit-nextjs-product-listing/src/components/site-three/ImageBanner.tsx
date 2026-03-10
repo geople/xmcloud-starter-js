@@ -1,5 +1,3 @@
-'use client';
-
 import {
   RichText as ContentSdkRichText,
   Text as ContentSdkText,
@@ -24,7 +22,7 @@ type ImageBannerProps = {
 
 export const Default = (props: ImageBannerProps) => {
   return (
-    <section className={`relative py-16 ${props.params.styles}`} data-class-change>
+    <section className={`relative py-16 ${props.params?.styles || ''}`} data-class-change>
       <div className="container px-4 mx-auto">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl lg:text-5xl uppercase mb-6">
@@ -69,7 +67,7 @@ export const Default = (props: ImageBannerProps) => {
 
 export const Grid = (props: ImageBannerProps) => {
   return (
-    <section className={`relative py-16 ${props.params.styles}`} data-class-change>
+    <section className={`relative py-16 ${props.params?.styles || ''}`} data-class-change>
       <div className="container px-4 mx-auto">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl lg:text-5xl uppercase mb-6">
@@ -113,7 +111,7 @@ export const Grid = (props: ImageBannerProps) => {
 
 export const FullWidthRow = (props: ImageBannerProps) => {
   return (
-    <section className={`relative py-16 ${props.params.styles}`} data-class-change>
+    <section className={`relative py-16 ${props.params?.styles || ''}`} data-class-change>
       <div className="container px-4 mx-auto">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl lg:text-5xl uppercase mb-6">
@@ -128,7 +126,7 @@ export const FullWidthRow = (props: ImageBannerProps) => {
       <div className="grid grid-cols-24 mt-16">
         <div className="col-span-7 h-64 lg:h-84">
           <ContentSdkImage
-            field={props.fields.Image1}
+            field={props.fields?.Image1}
             width={1920}
             height={1080}
             className="w-full h-full object-cover shadow-2xl rotate-0 hover:-rotate-4 transition-transform"
@@ -136,7 +134,7 @@ export const FullWidthRow = (props: ImageBannerProps) => {
         </div>
         <div className="col-span-10 h-64 lg:h-84">
           <ContentSdkImage
-            field={props.fields.Image2}
+            field={props.fields?.Image2}
             width={1920}
             height={1080}
             className="w-full h-full object-cover shadow-2xl rotate-0 hover:rotate-4 transition-transform"
@@ -144,7 +142,7 @@ export const FullWidthRow = (props: ImageBannerProps) => {
         </div>
         <div className="col-span-7 h-64 lg:h-84">
           <ContentSdkImage
-            field={props.fields.Image3}
+            field={props.fields?.Image3}
             width={1920}
             height={1080}
             className="w-full h-full object-cover shadow-2xl rotate-0 hover:-rotate-4 transition-transform"
@@ -157,7 +155,7 @@ export const FullWidthRow = (props: ImageBannerProps) => {
 
 export const SingleRowGrid = (props: ImageBannerProps) => {
   return (
-    <section className={`relative py-16 ${props.params.styles}`} data-class-change>
+    <section className={`relative py-16 ${props.params?.styles || ''}`} data-class-change>
       <div className="container px-4 mx-auto">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl lg:text-5xl uppercase mb-6">
@@ -201,7 +199,7 @@ export const SingleRowGrid = (props: ImageBannerProps) => {
 
 export const Stacked = (props: ImageBannerProps) => {
   return (
-    <section className={`relative py-16 ${props.params.styles}`} data-class-change>
+    <section className={`relative py-16 ${props.params?.styles || ''}`} data-class-change>
       <div className="container px-4 mx-auto">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-2xl lg:text-5xl uppercase mb-6">

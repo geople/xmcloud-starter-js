@@ -13,7 +13,7 @@ import { USER_ZIPCODE } from '@/lib/constants';
 
 export const HeroImageRight: React.FC<HeroProps> = (props) => {
   const { fields, isPageEditing } = props;
-  const { title, description, bannerText, bannerCTA, image, dictionary, searchLink } = fields;
+  const { title, description, bannerText, bannerCTA, image, dictionary, searchLink } = fields || {};
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export const HeroImageRight: React.FC<HeroProps> = (props) => {
   if (fields) {
     const needsBanner: boolean = isPageEditing
       ? true
-      : bannerText?.value !== '' || bannerCTA?.value.href !== ''
+      : bannerText?.value !== '' || bannerCTA?.value?.href !== ''
         ? true
         : false;
 
@@ -88,11 +88,11 @@ export const HeroImageRight: React.FC<HeroProps> = (props) => {
               className="mt-6 w-full"
             >
               <ZipcodeSearchForm
-                placeholder={dictionary.ZipPlaceholder}
-                buttonText={dictionary?.SubmitCTALabel}
+                placeholder={dictionary.ZipPlaceholder || ''}
+                buttonText={dictionary?.SubmitCTALabel || ''}
                 onSubmit={(values) => {
                   sessionStorage.setItem(USER_ZIPCODE, values.zipcode);
-                  if (searchLink) {
+                  if (searchLink?.value?.href) {
                     window.location.href = `${searchLink.value.href}`;
                   }
                 }}
@@ -107,6 +107,8 @@ export const HeroImageRight: React.FC<HeroProps> = (props) => {
               wrapperClass="max-h-[900px] relative w-full aspect-square @md/herowrapper:aspect-auto @md/herowrapper:absolute @md/herowrapper:top-0 @md/herowrapper:right-0 @md/herowrapper:bottom-0 @md/herowrapper:left-0 "
               className="absolute bottom-0 left-0 right-0 top-0 h-full w-full object-cover"
               priority={true}
+              loading="eager"
+              fetchPriority="high"
             />
 
             {/* Banner overlay */}

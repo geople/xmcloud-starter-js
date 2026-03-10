@@ -1,4 +1,6 @@
-import { Link, LinkField, Text, TextField, useSitecore } from '@sitecore-content-sdk/nextjs';
+import { LinkField, Text, TextField } from '@sitecore-content-sdk/nextjs';
+import NextLink from 'next/link';
+import { ComponentProps } from 'lib/component-props';
 import React, { type JSX } from 'react';
 
 interface Fields {
@@ -30,7 +32,7 @@ interface Fields {
   };
 }
 
-type TitleProps = {
+type TitleProps = ComponentProps & {
   params: { [key: string]: string };
   fields: Fields;
 };
@@ -54,32 +56,41 @@ const ComponentContent = (props: ComponentContentProps) => {
 
 export const Default = (props: TitleProps): JSX.Element => {
   const datasource = props.fields?.data?.datasource || props.fields?.data?.contextItem;
-  const { page } = useSitecore();
+  const { page } = props;
   const { mode } = page;
-  const text: TextField = datasource?.field?.jsonValue || {};
+  const datasourceField: TextField = datasource?.field?.jsonValue as TextField;
+  const contextField: TextField = page.layout.sitecore.route?.fields?.pageTitle as TextField;
+  const titleField: TextField = datasourceField || contextField;
   const link: LinkField = {
     value: {
       href: datasource?.url?.path,
-      title: datasource?.field?.jsonValue?.value,
+      title: titleField?.value ? String(titleField.value) : datasource?.field?.jsonValue?.value,
     },
   };
   if (!mode.isNormal) {
     link.value.querystring = `sc_site=${datasource?.url?.siteName}`;
-    if (!text?.value) {
-      text.value = 'Title field';
+    if (!titleField?.value) {
+      titleField.value = 'Title field';
       link.value.href = '#';
     }
   }
 
   return (
-    <ComponentContent styles={props.params.styles} id={props.params.RenderingIdentifier}>
+    <ComponentContent
+      styles={props.params.styles || ''}
+      id={props.params.RenderingIdentifier || ''}
+    >
       <>
         {mode.isEditing ? (
-          <Text field={text} />
+          <Text field={titleField} />
         ) : (
-          <Link field={link}>
-            <Text field={text} />
-          </Link>
+          link?.value?.href ? (
+            <NextLink href={link.value.href}>
+              <Text field={titleField} />
+            </NextLink>
+          ) : (
+            <Text field={titleField} />
+          )
         )}
       </>
     </ComponentContent>

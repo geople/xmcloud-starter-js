@@ -9,8 +9,8 @@ import { AccordionBlockItem } from './AccordionBlockItem.dev';
 export const Accordion5050TitleAbove: React.FC<AccordionProps> = (props) => {
   const { fields, isPageEditing } = props;
 
-  const { heading, description, link, children } = fields?.data?.datasource ?? {};
-  const accordionItems = children?.results ?? [];
+  const { heading, description, link, children } = fields?.data?.datasource || {};
+  const accordionItems = (children?.results ?? []).filter(Boolean);
 
   // Split accordion items into two columns
   const leftColumnItems = accordionItems.slice(0, Math.ceil(accordionItems.length / 2));
@@ -27,7 +27,7 @@ export const Accordion5050TitleAbove: React.FC<AccordionProps> = (props) => {
         className={cn(
           '@container @md:py-16 @lg:py-20 bg-background text-foreground border-b-2 border-t-2 py-10 [.border-b-2+&]:border-t-0',
           {
-            [props.params.styles]: props?.params?.styles,
+            [props.params?.styles as string]: props?.params?.styles,
           }
         )}
         data-class-change
@@ -42,7 +42,7 @@ export const Accordion5050TitleAbove: React.FC<AccordionProps> = (props) => {
                 <Text
                   tag="h2"
                   className="font-heading @md:text-6xl @lg:text-7xl mb-8 max-w-screen-sm text-pretty text-5xl font-light leading-[1.1] tracking-tighter antialiased"
-                  field={heading.jsonValue}
+                  field={heading?.jsonValue}
                 />
               )}
             </div>

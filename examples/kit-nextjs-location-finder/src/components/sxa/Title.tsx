@@ -1,4 +1,4 @@
-import { Link, LinkField, Text, TextField, useSitecore } from '@sitecore-content-sdk/nextjs';
+import { Link, LinkField, Text, TextField, Page } from '@sitecore-content-sdk/nextjs';
 import React, { type JSX } from 'react';
 
 interface Fields {
@@ -33,6 +33,7 @@ interface Fields {
 type TitleProps = {
   params: { [key: string]: string };
   fields: Fields;
+  page: Page;
 };
 
 type ComponentContentProps = {
@@ -54,19 +55,20 @@ const ComponentContent = (props: ComponentContentProps) => {
 
 export const Default = (props: TitleProps): JSX.Element => {
   const datasource = props.fields?.data?.datasource || props.fields?.data?.contextItem;
-  const { page } = useSitecore();
-  const { mode } = page;
-  const text: TextField = datasource?.field?.jsonValue || {};
+  const { mode } = props.page;
+  const datasourceField: TextField = datasource?.field?.jsonValue as TextField;
+  const contextField: TextField = props.page.layout.sitecore.route?.fields?.pageTitle as TextField;
+  const titleField: TextField = datasourceField || contextField;
   const link: LinkField = {
     value: {
       href: datasource?.url?.path,
-      title: datasource?.field?.jsonValue?.value,
+      title: titleField?.value ? String(titleField.value) : datasource?.field?.jsonValue?.value,
     },
   };
   if (!mode.isNormal) {
     link.value.querystring = `sc_site=${datasource?.url?.siteName}`;
-    if (!text?.value) {
-      text.value = 'Title field';
+    if (!titleField?.value) {
+      titleField.value = 'Title field';
       link.value.href = '#';
     }
   }
@@ -75,10 +77,10 @@ export const Default = (props: TitleProps): JSX.Element => {
     <ComponentContent styles={props.params.styles} id={props.params.RenderingIdentifier}>
       <>
         {mode.isEditing ? (
-          <Text field={text} />
+          <Text field={titleField} />
         ) : (
           <Link field={link}>
-            <Text field={text} />
+            <Text field={titleField} />
           </Link>
         )}
       </>

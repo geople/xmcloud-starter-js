@@ -11,7 +11,7 @@ import type { HeroFields, HeroProps } from './hero.props';
 
 export const HeroImageBackground: React.FC<HeroProps> = (props) => {
   const { fields: initialFields, isPageEditing } = props;
-  const [fields, setFields] = useState(initialFields);
+  const [fields, setFields] = useState(initialFields || {});
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -51,7 +51,8 @@ export const HeroImageBackground: React.FC<HeroProps> = (props) => {
         if (response.ok) {
           const data = await response.json();
           // Update fields with personalized content
-          const { title, description, bannerText, bannerCTA, heroImage } = data.heroDatasource;
+          const { title, description, bannerText, bannerCTA, heroImage } =
+            data?.heroDatasource || {};
           const image = heroImage.value ? heroImage : { value: heroImage };
           const personalizedFields: HeroFields = {
             title: {
@@ -65,7 +66,7 @@ export const HeroImageBackground: React.FC<HeroProps> = (props) => {
             },
             bannerCTA,
             image: image,
-            dictionary: initialFields.dictionary,
+            dictionary: initialFields?.dictionary,
           };
           setFields(personalizedFields);
         }
@@ -82,10 +83,10 @@ export const HeroImageBackground: React.FC<HeroProps> = (props) => {
     if (shouldPersonalize && !isPageEditing) {
       fetchPersonalizedContent();
     }
-  }, [initialFields.dictionary, isPageEditing]);
+  }, [initialFields?.dictionary, isPageEditing]);
 
   if (fields) {
-    const { title, description, bannerText, bannerCTA, image } = fields;
+    const { title, description, bannerText, bannerCTA, image } = fields || {};
     const needsBanner: boolean = isPageEditing
       ? true
       : bannerText?.value !== '' || bannerCTA?.value?.href !== ''
@@ -114,6 +115,8 @@ export const HeroImageBackground: React.FC<HeroProps> = (props) => {
             wrapperClass="absolute w-full inset-0 scrim-background/50 scrim-l-full group-[.position-right]:scrim-r-full group-[.position-right]:scrim-l-0 group-[.position-center]:scrim-l-0 group-[.position-center]:scrim-b-full"
             className="h-full w-full object-cover opacity-80"
             priority={true}
+            loading="eager"
+            fetchPriority="high"
           />
 
           {/* Blur effect for mobile */}

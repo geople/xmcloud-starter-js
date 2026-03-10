@@ -7,21 +7,20 @@ import { AccordionBlockItem } from './AccordionBlockItem.dev';
 import { NoDataFallback } from '@/utils/NoDataFallback';
 
 export const AccordionBlockDefault: React.FC<AccordionProps> = (props) => {
-  const { fields, isPageEditing } = props;
+  const { fields, isPageEditing, params } = props || {};
 
-  const { heading, description, link, children } = fields?.data?.datasource ?? {};
+  const { heading, description, link, children } = fields?.data?.datasource || {};
   const accordionItems = children?.results ?? [];
   const accordionItemValues = [
     ...accordionItems.map((_, index) => `accordion-block-item-${index + 1}`),
   ];
-
   if (fields) {
     return (
       <div
         data-component="AccordionBlock"
         data-class-change
         className={cn('@container bg-secondary text-secondary-foreground rounded-3xl', {
-          [props.params.styles]: props?.params?.styles,
+          [params.styles as string]: params?.styles,
         })}
       >
         <div className=" @md:py-16 @lg:py-20 @lg:grid-cols-[320px,1fr] @lg:gap-12 @xl:gap-16 mx-auto grid max-w-screen-xl gap-8 py-10">
@@ -30,7 +29,7 @@ export const AccordionBlockDefault: React.FC<AccordionProps> = (props) => {
               <Text
                 tag="h2"
                 className="font-heading text-primary @lg:text-7xl -ml-1 text-pretty text-5xl font-normal leading-[1.25] tracking-tighter"
-                field={heading.jsonValue}
+                field={heading?.jsonValue}
               />
             )}
             {description?.jsonValue && (

@@ -1,5 +1,5 @@
-import { Link, LinkField, Text, TextField, useSitecore } from '@sitecore-content-sdk/nextjs';
 import React, { JSX } from 'react';
+import { Link, LinkField, Text, TextField } from '@sitecore-content-sdk/nextjs';
 import { ComponentProps } from 'lib/component-props';
 
 interface Item {
@@ -40,25 +40,29 @@ const ComponentContent = ({ id, styles = '', children }: ComponentContentProps):
   </div>
 );
 
-export const Default = ({ params, fields }: TitleProps): JSX.Element => {
-  const { page } = useSitecore();
+export const Default = ({ params, fields, page }: TitleProps): JSX.Element => {
   const { styles, RenderingIdentifier: id } = params;
   const datasource = fields?.data?.datasource || fields?.data?.contextItem;
-  const text: TextField = datasource?.field?.jsonValue || {};
+  const datasourceField: TextField = datasource?.field?.jsonValue as TextField;
+  const contextField: TextField = page?.layout?.sitecore?.route?.fields?.Title as TextField;
+  const titleField: TextField = datasourceField || contextField;
+
   const link: LinkField = {
     value: {
       href: datasource?.url?.path,
-      title: datasource?.field?.jsonValue?.value,
+      title:
+        (titleField?.value ? String(titleField.value) : undefined) ||
+        datasource?.field?.jsonValue?.value,
     },
   };
 
   return (
     <ComponentContent styles={styles} id={id}>
-      {page.mode.isEditing ? (
-        <Text field={text} />
+      {page?.mode?.isEditing ? (
+        <Text field={titleField} />
       ) : (
         <Link field={link}>
-          <Text field={text} />
+          <Text field={titleField} />
         </Link>
       )}
     </ComponentContent>

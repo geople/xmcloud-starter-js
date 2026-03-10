@@ -10,8 +10,8 @@ import { cn } from '@/lib/utils';
 export const AccordionBlockCentered: React.FC<AccordionProps> = (props) => {
   const { fields, isPageEditing } = props;
 
-  const { heading, description, link, children } = fields?.data?.datasource ?? {};
-  const accordionItems = children?.results ?? [];
+  const { heading, description, link, children } = fields?.data?.datasource || {};
+  const accordionItems = (children?.results ?? []).filter(Boolean);
   const acordionItemValues = [
     ...accordionItems.map((_, index) => `accordion-block-item-${index + 1}`),
   ];
@@ -22,7 +22,7 @@ export const AccordionBlockCentered: React.FC<AccordionProps> = (props) => {
         className={cn(
           '@container @md:py-16 @lg:py-20 bg-background text-foreground border-b-2 border-t-2 py-10 [.border-b-2+&]:border-t-0',
           {
-            [props.params.styles]: props?.params?.styles,
+            [props.params.styles as string]: props?.params?.styles,
           }
         )}
         data-class-change
@@ -36,7 +36,7 @@ export const AccordionBlockCentered: React.FC<AccordionProps> = (props) => {
               <Text
                 tag="h2"
                 className="font-heading @md:text-6xl @lg:text-7xl mx-auto max-w-screen-md text-pretty text-5xl font-light leading-[1.1] tracking-tighter antialiased"
-                field={heading.jsonValue}
+                field={heading?.jsonValue}
               />
             )}
           </div>

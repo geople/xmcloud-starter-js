@@ -25,9 +25,9 @@ export const AccordionBlockTwoColumnTitleLeft: React.FC<AccordionProps> = (props
         data-component="AccordionBlock"
         className={cn(
           '@container @md:py-16 @lg:py-20 bg-background text-foreground border-b-2 border-t-2 py-10 [.border-b-2+&]:border-t-0',
-          {
-            [props.params.styles]: props?.params?.styles,
-          }
+          props?.params?.styles && {
+    [props.params.styles]: true,
+  }
         )}
         data-class-change
       >
@@ -41,7 +41,7 @@ export const AccordionBlockTwoColumnTitleLeft: React.FC<AccordionProps> = (props
                 <Text
                   tag="h2"
                   className="@md:text-5xl @md:vertical-text max-h-[420px] text-pretty text-4xl font-light leading-[1.1] tracking-tighter antialiased"
-                  field={heading.jsonValue}
+                  field={heading?.jsonValue}
                 />
               )}
             </div>

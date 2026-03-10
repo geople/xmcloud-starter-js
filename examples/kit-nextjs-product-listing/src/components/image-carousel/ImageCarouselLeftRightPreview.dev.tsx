@@ -31,8 +31,8 @@ export const ImageCarouselLeftRightPreview = (props: ImageCarouselProps) => {
   const controlsWrapperClasses = 'mt-8 flex items-center gap-4';
   const previewImageClasses = 'relative h-auto w-full cursor-pointer';
 
-  const { title, imageItems } = fields.data.datasource;
-  const { results: slides } = imageItems;
+  const { title, imageItems } = fields?.data?.datasource ?? {};
+  const { results: slides = [] } = imageItems || {};
 
   // State for tracking current slide
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -100,7 +100,7 @@ export const ImageCarouselLeftRightPreview = (props: ImageCarouselProps) => {
           reducedMotion={isReducedMotion}
         >
           <div className="mb-16 w-full space-y-4 px-4">
-            <Text tag="h2" field={title.jsonValue} className={titleClasses} />
+            <Text tag="h2" field={title?.jsonValue} className={titleClasses} />
           </div>
         </AnimatedSection>
 
@@ -115,7 +115,7 @@ export const ImageCarouselLeftRightPreview = (props: ImageCarouselProps) => {
             aria-label="Previous slide"
           >
             <ImageWrapper
-              image={slides[prevIndex].image?.jsonValue}
+              image={slides[prevIndex]?.image?.jsonValue}
               className={previewImageClasses}
             />
           </button>
@@ -155,7 +155,7 @@ export const ImageCarouselLeftRightPreview = (props: ImageCarouselProps) => {
                 >
                   <div className="relative">
                     <ImageWrapper
-                      image={slide.image?.jsonValue}
+                      image={slide?.image?.jsonValue}
                       className="relative z-0 h-auto w-full"
                     />
                   </div>
@@ -171,7 +171,7 @@ export const ImageCarouselLeftRightPreview = (props: ImageCarouselProps) => {
             aria-label="Next slide"
           >
             <ImageWrapper
-              image={slides[nextIndex].image?.jsonValue}
+              image={slides[nextIndex]?.image?.jsonValue}
               className={previewImageClasses}
             />
           </button>

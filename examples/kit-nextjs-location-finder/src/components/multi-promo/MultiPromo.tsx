@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect, useRef } from 'react';
 import { RichText, Text } from '@sitecore-content-sdk/nextjs';
 import { debounce } from 'radash';
@@ -14,9 +16,9 @@ import { Default as MultiPromoItem } from './MultiPromoItem.dev';
 
 export const Default: React.FC<MultiPromoProps> = (props) => {
   const { fields, params } = props;
-  const { numColumns } = params ?? {};
-  const { children } = fields?.data?.datasource ?? {};
-  const { title, description } = fields?.data?.datasource ?? {};
+  const { numColumns } = params || {};
+  const { children } = fields?.data?.datasource || {};
+  const { title, description } = fields?.data?.datasource || {};
   const [api, setApi] = useState<CarouselApi>();
   const [announcement, setAnnouncement] = useState('');
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -122,7 +124,7 @@ export const Default: React.FC<MultiPromoProps> = (props) => {
                       }
                     )}
                   >
-                    <MultiPromoItem key={index} {...item} />
+                    <MultiPromoItem key={index} {...item} page={props.page} />
                   </CarouselItem>
                 ))}
               </CarouselContent>

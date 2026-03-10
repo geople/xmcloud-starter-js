@@ -1,3 +1,5 @@
+'use client';
+
 import { Text, TextField, useSitecore } from '@sitecore-content-sdk/nextjs';
 import React, { JSX } from 'react';
 
@@ -38,11 +40,14 @@ type TitleProps = {
 export const Default = (props: TitleProps): JSX.Element => {
   const { page } = useSitecore();
   const datasource = props.fields?.data?.datasource || props.fields?.data?.contextItem;
-  const text: TextField = datasource?.field?.jsonValue || {};
+  const datasourceField: TextField = datasource?.field?.jsonValue as TextField;
+  const contextField: TextField = page.layout.sitecore.route?.fields?.pageTitle as TextField;
+  const titleField: TextField = datasourceField || contextField;
+
   const isPageEditing = Boolean(page.mode.isEditing);
   const modifyTitleProps = {
-    ...text,
-    value: text?.value || 'Add Title',
+    ...titleField,
+    value: titleField?.value || 'Add Title',
   };
 
   if (!page.mode.isNormal) {
@@ -74,7 +79,7 @@ export const Default = (props: TitleProps): JSX.Element => {
             className="field-title"
           />
         ) : (
-          <Text tag={props.params.tag} field={text} className="field-title" />
+          <Text tag={props.params.tag} field={titleField} className="field-title" />
         )}
       </div>
     </div>

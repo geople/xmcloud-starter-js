@@ -15,7 +15,7 @@ export const ImageGalleryNoSpacing: React.FC<ImageGalleryProps> = (props) => {
   const { fields, isPageEditing } = props;
   const prefersReducedMotion = useMatchMedia('(prefers-reduced-motion: reduce)');
   const containerRef = useRef<HTMLDivElement>(null);
-  const { title, description, image1, image2, image3, image4 } = fields;
+  const { title, description, image1, image2, image3, image4 } = fields || {};
 
   // Use our enhanced parallax hook with reduced motion check
   const { isParallaxActive } = useParallaxEnhancedOptimized(containerRef, {
@@ -66,7 +66,7 @@ export const ImageGalleryNoSpacing: React.FC<ImageGalleryProps> = (props) => {
             data-speed={isMdContainer ? '0.2' : '0.1'}
           >
             {image1 && (
-              <ImageWrapper data-component="image-1" image={image1} className="h-auto w-full" />
+              <ImageWrapper data-component="image-1" image={image1} className="h-auto w-full" page={props.page} />
             )}
           </div>
 
@@ -79,7 +79,7 @@ export const ImageGalleryNoSpacing: React.FC<ImageGalleryProps> = (props) => {
                 data-speed={isMdContainer ? '0.1' : '-0.0'}
               >
                 {image1 && (
-                  <ImageWrapper data-component="image-2" image={image2} className="h-auto w-full" />
+                  <ImageWrapper data-component="image-2" image={image2} className="h-auto w-full" page={props.page} />
                 )}
               </div>
 
@@ -89,7 +89,7 @@ export const ImageGalleryNoSpacing: React.FC<ImageGalleryProps> = (props) => {
                 data-speed={isMdContainer ? '0.05' : '-0.05'}
               >
                 {image3 && (
-                  <ImageWrapper data-component="image-3" image={image3} className="h-auto w-full" />
+                  <ImageWrapper data-component="image-3" image={image3} className="h-auto w-full" page={props.page} />
                 )}
               </div>
             </div>
@@ -100,7 +100,7 @@ export const ImageGalleryNoSpacing: React.FC<ImageGalleryProps> = (props) => {
                 data-speed={isMdContainer ? '0.0' : '-0.1'}
               >
                 {image4 && (
-                  <ImageWrapper data-component="image-4" image={image4} className="h-auto w-full" />
+                  <ImageWrapper data-component="image-4" image={image4} className="h-auto w-full" page={props.page} />
                 )}
               </div>
             </div>

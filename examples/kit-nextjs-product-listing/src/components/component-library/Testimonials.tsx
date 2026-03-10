@@ -11,7 +11,6 @@ import {
   Link as ContentSdkLink,
   RichText as ContentSdkRichText,
   Text as ContentSdkText,
-  useSitecore,
 } from '@sitecore-content-sdk/nextjs';
 import { IGQLImageField, IGQLLinkField, IGQLRichTextField, IGQLTextField } from 'src/types/igql';
 import { useMemo, type JSX } from 'react';
@@ -21,6 +20,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarOutline } from '@fortawesome/free-regular-svg-icons';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from 'shadcd/components/ui/tabs';
 import { NoDataFallback } from '@/utils/NoDataFallback';
+import { ComponentProps } from '@/lib/component-props';
 
 interface Fields {
   data: {
@@ -45,12 +45,11 @@ interface TestimonialFields {
   testimonialRating: IGQLTextField;
 }
 
-type TestimonialsProps = {
-  params: { [key: string]: string };
+type TestimonialsProps = ComponentProps & {
   fields: Fields;
 };
 
-type TestimonialCardProps = {
+type TestimonialCardProps = ComponentProps & {
   testimonial: TestimonialFields;
   type: 'simple' | 'centered' | 'boxed' | 'large';
   withRating?: boolean;
@@ -58,8 +57,13 @@ type TestimonialCardProps = {
   className?: string;
 };
 
-const StarRating = ({ r: ratingField }: { r: IGQLTextField }) => {
-  const { page } = useSitecore();
+const StarRating = ({
+  r: ratingField,
+  page,
+}: {
+  r: IGQLTextField;
+  page: ComponentProps['page'];
+}) => {
   const { isEditing } = page.mode;
 
   const rating = Math.min(Number(ratingField.jsonValue?.value) || 0, 5);
@@ -83,7 +87,7 @@ const TestimonialCard = (props: TestimonialCardProps) => {
     return (
       <>
         {props.withRating ? (
-          <StarRating r={props.testimonial.testimonialRating} />
+          <StarRating r={props.testimonial.testimonialRating} page={props.page} />
         ) : props.withLogo ? (
           <div className="h-12 mb-12">
             <ContentSdkImage
@@ -103,6 +107,7 @@ const TestimonialCard = (props: TestimonialCardProps) => {
     props.testimonial.testimonialRating,
     props.testimonial.testimonialIcon?.jsonValue,
     props.withLogo,
+    props.page,
   ]);
 
   const testimonialAuthorCard = useMemo(() => {
@@ -254,10 +259,10 @@ const TestimonialCard = (props: TestimonialCardProps) => {
   }
 };
 
-export const Default = (props: TestimonialsProps): JSX.Element => {
+export const Default: (props: TestimonialsProps) => JSX.Element = (props) => {
   const datasource = useMemo(() => props.fields.data?.datasource, [props.fields.data?.datasource]);
 
-  if (!datasource) {
+  if (!props.fields) {
     return <NoDataFallback componentName="Testimonials" />;
   }
 
@@ -266,20 +271,23 @@ export const Default = (props: TestimonialsProps): JSX.Element => {
       <div className="container mx-auto">
         <div className="max-w-3xl mx-auto mb-20 text-center">
           <h2 className="text-5xl font-bold mb-6">
-            <ContentSdkText field={datasource.title?.jsonValue} />
+            <ContentSdkText field={datasource?.title?.jsonValue} />
           </h2>
           <p className="text-lg">
-            <ContentSdkText field={datasource.tagLine?.jsonValue} />
+            <ContentSdkText field={datasource?.tagLine?.jsonValue} />
           </p>
         </div>
         <div className="flex flex-col md:flex-row gap-x-12 gap-y-20">
-          {datasource.children?.results?.map((testimonial) => (
+          {datasource?.children?.results?.map((testimonial) => (
             <TestimonialCard
               key={testimonial.id}
               testimonial={testimonial}
               type="centered"
               withLogo
               className="flex-1"
+              rendering={props.rendering}
+              params={props.params}
+              page={props.page}
             />
           )) || []}
         </div>
@@ -291,7 +299,7 @@ export const Default = (props: TestimonialsProps): JSX.Element => {
 export const Testimonials1 = (props: TestimonialsProps): JSX.Element => {
   const datasource = useMemo(() => props.fields.data?.datasource, [props.fields.data?.datasource]);
 
-  if (!datasource) {
+  if (!props.fields) {
     return <NoDataFallback componentName="Testimonials" />;
   }
 
@@ -300,18 +308,26 @@ export const Testimonials1 = (props: TestimonialsProps): JSX.Element => {
       <div className="container mx-auto">
         <div className="max-w-3xl mx-auto mb-20 text-center">
           <h2 className="text-5xl font-bold mb-6">
-            <ContentSdkText field={datasource.title?.jsonValue} />
+            <ContentSdkText field={datasource?.title?.jsonValue} />
           </h2>
           <p className="text-lg">
-            <ContentSdkText field={datasource.tagLine?.jsonValue} />
+            <ContentSdkText field={datasource?.tagLine?.jsonValue} />
           </p>
         </div>
         <div className="max-w-5xl mx-auto px-12">
           <Carousel opts={{ loop: true }} className="w-full">
             <CarouselContent>
-              {datasource.children?.results?.map((testimonial) => (
+              {datasource?.children?.results?.map((testimonial) => (
                 <CarouselItem key={testimonial.id}>
-                  <TestimonialCard testimonial={testimonial} type="centered" withLogo withRating />
+                  <TestimonialCard
+                    testimonial={testimonial}
+                    type="centered"
+                    withLogo
+                    withRating
+                    rendering={props.rendering}
+                    params={props.params}
+                    page={props.page}
+                  />
                 </CarouselItem>
               )) || []}
             </CarouselContent>
@@ -327,7 +343,7 @@ export const Testimonials1 = (props: TestimonialsProps): JSX.Element => {
 export const Testimonials2 = (props: TestimonialsProps): JSX.Element => {
   const datasource = useMemo(() => props.fields.data?.datasource, [props.fields.data?.datasource]);
 
-  if (!datasource) {
+  if (!props.fields) {
     return <NoDataFallback componentName="Testimonials" />;
   }
 
@@ -336,18 +352,26 @@ export const Testimonials2 = (props: TestimonialsProps): JSX.Element => {
       <div className="container mx-auto">
         <div className="max-w-3xl mb-20">
           <h2 className="text-5xl font-bold mb-6">
-            <ContentSdkText field={datasource.title?.jsonValue} />
+            <ContentSdkText field={datasource?.title?.jsonValue} />
           </h2>
           <p className="text-lg">
-            <ContentSdkText field={datasource.tagLine?.jsonValue} />
+            <ContentSdkText field={datasource?.tagLine?.jsonValue} />
           </p>
         </div>
 
         <Carousel opts={{ align: 'start', loop: true }} className="w-full">
           <CarouselContent>
-            {datasource.children?.results?.map((testimonial) => (
+            {datasource?.children?.results?.map((testimonial) => (
               <CarouselItem key={testimonial.id} className="pr-4 md:basis-1/2">
-                <TestimonialCard testimonial={testimonial} type="simple" withLogo withRating />
+                <TestimonialCard
+                  testimonial={testimonial}
+                  type="simple"
+                  withLogo
+                  withRating
+                  rendering={props.rendering}
+                  params={props.params}
+                  page={props.page}
+                />
               </CarouselItem>
             )) || []}
           </CarouselContent>
@@ -364,7 +388,7 @@ export const Testimonials2 = (props: TestimonialsProps): JSX.Element => {
 export const Testimonials3 = (props: TestimonialsProps): JSX.Element => {
   const datasource = useMemo(() => props.fields.data?.datasource, [props.fields.data?.datasource]);
 
-  if (!datasource) {
+  if (!props.fields) {
     return <NoDataFallback componentName="Testimonials" />;
   }
 
@@ -374,22 +398,25 @@ export const Testimonials3 = (props: TestimonialsProps): JSX.Element => {
         <div className="grid md:grid-cols-2 items-center gap-12 md:gap-20">
           <div className="md:mb-16">
             <h2 className="text-5xl font-bold mb-6">
-              <ContentSdkText field={datasource.title?.jsonValue} />
+              <ContentSdkText field={datasource?.title?.jsonValue} />
             </h2>
             <p className="text-lg">
-              <ContentSdkText field={datasource.tagLine?.jsonValue} />
+              <ContentSdkText field={datasource?.tagLine?.jsonValue} />
             </p>
           </div>
 
           <Carousel opts={{ align: 'start', loop: true }} className="w-full">
             <CarouselContent>
-              {datasource.children?.results?.map((testimonial) => (
+              {datasource?.children?.results?.map((testimonial) => (
                 <CarouselItem key={testimonial.id} className="pr-2 md:basis-3/4">
                   <TestimonialCard
                     testimonial={testimonial}
                     type="boxed"
                     withLogo
                     className="h-full"
+                    rendering={props.rendering}
+                    params={props.params}
+                    page={props.page}
                   />
                 </CarouselItem>
               )) || []}
@@ -408,7 +435,7 @@ export const Testimonials3 = (props: TestimonialsProps): JSX.Element => {
 export const Testimonials4 = (props: TestimonialsProps): JSX.Element => {
   const datasource = useMemo(() => props.fields.data?.datasource, [props.fields.data?.datasource]);
 
-  if (!datasource) {
+  if (!props.fields) {
     return <NoDataFallback componentName="Testimonials" />;
   }
 
@@ -418,18 +445,25 @@ export const Testimonials4 = (props: TestimonialsProps): JSX.Element => {
         <div className="grid md:grid-cols-2 items-center gap-12 md:gap-20">
           <div className="md:mb-16">
             <h2 className="text-5xl font-bold mb-6">
-              <ContentSdkText field={datasource.title?.jsonValue} />
+              <ContentSdkText field={datasource?.title?.jsonValue} />
             </h2>
             <p className="text-lg">
-              <ContentSdkText field={datasource.tagLine?.jsonValue} />
+              <ContentSdkText field={datasource?.tagLine?.jsonValue} />
             </p>
           </div>
 
           <Carousel opts={{ align: 'start', loop: true }} className="w-full">
             <CarouselContent>
-              {datasource.children?.results?.map((testimonial) => (
+              {datasource?.children?.results?.map((testimonial) => (
                 <CarouselItem key={testimonial.id}>
-                  <TestimonialCard testimonial={testimonial} type="boxed" withRating />
+                  <TestimonialCard
+                    testimonial={testimonial}
+                    type="boxed"
+                    withRating
+                    rendering={props.rendering}
+                    params={props.params}
+                    page={props.page}
+                  />
                 </CarouselItem>
               )) || []}
             </CarouselContent>
@@ -447,7 +481,7 @@ export const Testimonials4 = (props: TestimonialsProps): JSX.Element => {
 export const Testimonials5 = (props: TestimonialsProps): JSX.Element => {
   const datasource = useMemo(() => props.fields.data?.datasource, [props.fields.data?.datasource]);
 
-  if (!datasource) {
+  if (!props.fields) {
     return <NoDataFallback componentName="Testimonials" />;
   }
 
@@ -456,18 +490,26 @@ export const Testimonials5 = (props: TestimonialsProps): JSX.Element => {
       <div className="container mx-auto">
         <div className="max-w-3xl mb-20">
           <h2 className="text-5xl font-bold mb-6">
-            <ContentSdkText field={datasource.title?.jsonValue} />
+            <ContentSdkText field={datasource?.title?.jsonValue} />
           </h2>
           <p className="text-lg">
-            <ContentSdkText field={datasource.tagLine?.jsonValue} />
+            <ContentSdkText field={datasource?.tagLine?.jsonValue} />
           </p>
         </div>
 
         <Carousel opts={{ align: 'start', loop: true }} className="w-full">
           <CarouselContent>
-            {datasource.children?.results?.map((testimonial) => (
+            {datasource?.children?.results?.map((testimonial) => (
               <CarouselItem key={testimonial.id}>
-                <TestimonialCard testimonial={testimonial} type="large" withLogo withRating />
+                <TestimonialCard
+                  testimonial={testimonial}
+                  type="large"
+                  withLogo
+                  withRating
+                  rendering={props.rendering}
+                  params={props.params}
+                  page={props.page}
+                />
               </CarouselItem>
             )) || []}
           </CarouselContent>
@@ -484,7 +526,7 @@ export const Testimonials5 = (props: TestimonialsProps): JSX.Element => {
 export const Testimonials6 = (props: TestimonialsProps): JSX.Element => {
   const datasource = useMemo(() => props.fields.data?.datasource, [props.fields.data?.datasource]);
 
-  if (!datasource) {
+  if (!props.fields) {
     return <NoDataFallback componentName="Testimonials" />;
   }
 
@@ -493,20 +535,23 @@ export const Testimonials6 = (props: TestimonialsProps): JSX.Element => {
       <div className="container mx-auto">
         <div className="max-w-3xl mx-auto mb-20 text-center">
           <h2 className="text-5xl font-bold mb-6">
-            <ContentSdkText field={datasource.title?.jsonValue} />
+            <ContentSdkText field={datasource?.title?.jsonValue} />
           </h2>
           <p className="text-lg">
-            <ContentSdkText field={datasource.tagLine?.jsonValue} />
+            <ContentSdkText field={datasource?.tagLine?.jsonValue} />
           </p>
         </div>
         <div className="md:columns-3 gap-8">
-          {datasource.children?.results?.map((testimonial) => (
+          {datasource?.children?.results?.map((testimonial) => (
             <TestimonialCard
               key={testimonial.id}
               testimonial={testimonial}
               type="boxed"
               withRating
               className="mb-8"
+              rendering={props.rendering}
+              params={props.params}
+              page={props.page}
             />
           )) || []}
         </div>
@@ -518,7 +563,7 @@ export const Testimonials6 = (props: TestimonialsProps): JSX.Element => {
 export const Testimonials7 = (props: TestimonialsProps): JSX.Element => {
   const datasource = useMemo(() => props.fields.data?.datasource, [props.fields.data?.datasource]);
 
-  if (!datasource) {
+  if (!props.fields) {
     return <NoDataFallback componentName="Testimonials" />;
   }
 
@@ -527,20 +572,23 @@ export const Testimonials7 = (props: TestimonialsProps): JSX.Element => {
       <div className="container mx-auto">
         <div className="max-w-3xl mx-auto mb-20 text-center">
           <h2 className="text-5xl font-bold mb-6">
-            <ContentSdkText field={datasource.title?.jsonValue} />
+            <ContentSdkText field={datasource?.title?.jsonValue} />
           </h2>
           <p className="text-lg">
-            <ContentSdkText field={datasource.tagLine?.jsonValue} />
+            <ContentSdkText field={datasource?.tagLine?.jsonValue} />
           </p>
         </div>
         <div className="flex flex-col md:flex-row gap-x-12 gap-y-20">
-          {datasource.children?.results?.map((testimonial) => (
+          {datasource?.children?.results?.map((testimonial) => (
             <TestimonialCard
               key={testimonial.id}
               testimonial={testimonial}
               type="boxed"
               withRating
               className="flex-1"
+              rendering={props.rendering}
+              params={props.params}
+              page={props.page}
             />
           )) || []}
         </div>
@@ -552,7 +600,7 @@ export const Testimonials7 = (props: TestimonialsProps): JSX.Element => {
 export const Testimonials8 = (props: TestimonialsProps): JSX.Element => {
   const datasource = useMemo(() => props.fields.data?.datasource, [props.fields.data?.datasource]);
 
-  if (!datasource) {
+  if (!props.fields) {
     return <NoDataFallback componentName="Testimonials" />;
   }
 
@@ -561,16 +609,16 @@ export const Testimonials8 = (props: TestimonialsProps): JSX.Element => {
       <div className="container mx-auto">
         <div className="max-w-3xl mb-20">
           <h2 className="text-5xl font-bold mb-6">
-            <ContentSdkText field={datasource.title?.jsonValue} />
+            <ContentSdkText field={datasource?.title?.jsonValue} />
           </h2>
           <p className="text-lg">
-            <ContentSdkText field={datasource.tagLine?.jsonValue} />
+            <ContentSdkText field={datasource?.tagLine?.jsonValue} />
           </p>
         </div>
 
         <Carousel opts={{ align: 'start', loop: true }} className="w-full">
           <CarouselContent>
-            {datasource.children?.results?.map((testimonial) => (
+            {datasource?.children?.results?.map((testimonial) => (
               <CarouselItem key={testimonial.id} className="md:basis-1/2">
                 <TestimonialCard
                   testimonial={testimonial}
@@ -578,6 +626,9 @@ export const Testimonials8 = (props: TestimonialsProps): JSX.Element => {
                   withLogo
                   withRating
                   className="h-full"
+                  rendering={props.rendering}
+                  params={props.params}
+                  page={props.page}
                 />
               </CarouselItem>
             )) || []}
@@ -595,7 +646,7 @@ export const Testimonials8 = (props: TestimonialsProps): JSX.Element => {
 export const Testimonials9 = (props: TestimonialsProps): JSX.Element => {
   const datasource = useMemo(() => props.fields.data?.datasource, [props.fields.data?.datasource]);
 
-  if (!datasource) {
+  if (!props.fields) {
     return <NoDataFallback componentName="Testimonials" />;
   }
 
@@ -604,16 +655,16 @@ export const Testimonials9 = (props: TestimonialsProps): JSX.Element => {
       <div className="container mx-auto">
         <div className="max-w-3xl mx-auto mb-20 text-center">
           <h2 className="text-5xl font-bold mb-6">
-            <ContentSdkText field={datasource.title?.jsonValue} />
+            <ContentSdkText field={datasource?.title?.jsonValue} />
           </h2>
           <p className="text-lg">
-            <ContentSdkText field={datasource.tagLine?.jsonValue} />
+            <ContentSdkText field={datasource?.tagLine?.jsonValue} />
           </p>
         </div>
 
-        <Tabs defaultValue={datasource.children.results[0].id} className="mt-20">
+        <Tabs defaultValue={datasource?.children.results[0].id} className="mt-20">
           <TabsList>
-            {datasource.children?.results?.map((testimonial) => (
+            {datasource?.children?.results?.map((testimonial) => (
               <TabsTrigger value={testimonial.id} key={testimonial.id}>
                 <ContentSdkImage
                   field={testimonial.testimonialIcon?.jsonValue}
@@ -625,9 +676,16 @@ export const Testimonials9 = (props: TestimonialsProps): JSX.Element => {
             )) || []}
           </TabsList>
 
-          {datasource.children?.results?.map((testimonial) => (
+          {datasource?.children?.results?.map((testimonial) => (
             <TabsContent value={testimonial.id} key={testimonial.id} className="py-16">
-              <TestimonialCard testimonial={testimonial} type="centered" withRating />
+              <TestimonialCard
+                testimonial={testimonial}
+                type="centered"
+                withRating
+                rendering={props.rendering}
+                params={props.params}
+                page={props.page}
+              />
             </TabsContent>
           )) || []}
         </Tabs>

@@ -14,7 +14,7 @@ export const ImageGalleryFiftyFifty: React.FC<ImageGalleryProps> = (props) => {
   const { fields, isPageEditing } = props;
   const prefersReducedMotion = useMatchMedia('(prefers-reduced-motion: reduce)');
   const containerRef = useRef<HTMLDivElement>(null);
-  const { title, description, image1, image2, image3, image4 } = fields;
+  const { title, description, image1, image2, image3, image4 } = fields || {};
   // Use our enhanced parallax hook with reduced motion check
   const { isParallaxActive } = useParallaxEnhancedOptimized(containerRef, {
     disabled: isPageEditing || prefersReducedMotion,
@@ -69,6 +69,7 @@ export const ImageGalleryFiftyFifty: React.FC<ImageGalleryProps> = (props) => {
                   wrapperClass="w-full relative rounded-default aspect-square "
                   className=" h-full w-full object-cover"
                   data-component="image-1"
+                  page={props.page}
                 />
               )}
             </div>
@@ -87,6 +88,7 @@ export const ImageGalleryFiftyFifty: React.FC<ImageGalleryProps> = (props) => {
                   wrapperClass="w-full relative rounded-default aspect-square "
                   className="h-full w-full object-cover"
                   data-component="image-2"
+                  page={props.page}
                 />
               )}
             </div>
@@ -108,6 +110,7 @@ export const ImageGalleryFiftyFifty: React.FC<ImageGalleryProps> = (props) => {
                   wrapperClass="w-full relative rounded-default aspect-square"
                   className="h-full w-full object-cover"
                   data-component="image-3"
+                  page={props.page}
                 />
               )}
             </div>
@@ -129,6 +132,7 @@ export const ImageGalleryFiftyFifty: React.FC<ImageGalleryProps> = (props) => {
                   image={image4}
                   wrapperClass="w-full relative rounded-default aspect-square "
                   className=" h-full w-full object-cover"
+                  page={props.page}
                 />
               )}
             </div>
